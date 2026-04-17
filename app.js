@@ -1,50 +1,69 @@
-const taskinput = document.getElementById("taskInput");
+const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
 
-// Get tasks
+// GET tasks
 async function loadTasks() {
-    const res = await fetch("http://localhost:3000/tasks");
-    const tasks = await res.json();
+  const res = await fetch("http://localhost:3000/tasks");
+  const tasks = await res.json();
 
-    taskList.innerHTML = "";
+  taskList.innerHTML = "";
 
-    tasks.foreach((task, index) => {
-        const li = document.createElement("li");
-        li.textContent = task.text;
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.textContent = task.text;
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
 
-        deleteBtn.onclick = async () => {
-            await fetch(`http://localhost:3000/tasks/${index}`, {
-                method: "DELETE"
-            });
-            loadTasks();
-        };
-            li.appendChild(deleteBtn); 
-            taskList.appendChild(li);
+    deleteBtn.onclick = async () => {
+      await fetch(`http://localhost:3000/tasks/${index}`, {
+        method: "DELETE"
+      });
+      loadTasks();
+    };
 
-        });
+    li.appendChild(deleteBtn);
+    taskList.appendChild(li);
+  });
 }
 
+const editBtn = document.createElement("button");
+editBtn.textContent = "Edit";
+
+editBtn.onclick = async () => {
+  const newText = prompt("Edit task:", task.text);
+
+  await fetch(`http://localhost:3000/tasks/${index}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text: newText })
+  });
+
+  loadTasks();
+};
+
+li.appendChild(editBtn);
+
+
+
+
 // ADD task
-
 addTaskBtn.addEventListener("click", async () => {
-    const task = taskinput.value; 
+  const task = taskInput.value;
 
-    await fetch("http://localhost:3000/tasks", {
-        method: "POST",
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify({text: task})
-    });
+  await fetch("http://localhost:3000/tasks", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text: task })
+  });
 
-    taskinput.value = "";
-    loadTasks();
+  taskInput.value = "";
+  loadTasks();
 });
 
 loadTasks();
-
-    

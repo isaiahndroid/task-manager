@@ -27,6 +27,13 @@ app.delete("/tasks/:index", (req, res) => {
     res.json({ message: "Task deleted"});
 });
 
+app.put("/tasks/:index", (req, res) => {
+  const index = req.params.index;
+  tasks[index] = req.body;
+  res.json(tasks[index]);
+});
+
+
 app.listen(3000, () => {
     console.log("server running on port 3000");
 });
